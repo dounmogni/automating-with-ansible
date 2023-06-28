@@ -1,0 +1,28 @@
+---
+- name: Installer vsftpd
+  hosts: all
+  become: true
+  tasks:
+  - name: installing vsftpd package
+    package:
+      name: "{{ item }}"
+      state: present
+      update_cache: true
+    with_items:
+      - vsftpd
+  - name: Activer le service vsftpd
+    service:
+       name: vsftpd
+       state: started
+       enabled: yes
+  - name: Create the directory
+    file:
+      path: /var/ftp/pub/
+      state: directory
+      mode: "0755"       
+  - name: create readme file
+    copy:
+      content: "welcome to my friendly server\n"
+      dest: /var/ftp/pub/README
+      force: no
+      mode: 0444
