@@ -1,0 +1,35 @@
+---
+- name: Installer et configurer les services
+  hosts: ansible2.example.com
+  become: true
+
+  vars:
+    apache_service_name: apache2
+    firewall_service_name: ufw
+    firewall_port: 80
+
+  tasks:
+    - name: Installer Apache
+      apt:
+        name: "{{ apache_service_name }}"
+        state: present
+        update_cache: yes
+
+    - name: Démarrer le service Apache
+      service:
+        name: "{{ apache_service_name }}"
+        state: started
+        enabled: yes
+
+    - name: Installer ufw
+      apt:
+        name: "{{ firewall_service_name }}"
+        state: present
+        update_cache: yes
+
+    - name: Ouvrir le port HTTP ({{ firewall_port }}) sur le pare-feu
+      shell: ufw allow "{{ firewall_port }}"
+
+    - name: Activer ufw
+      shell: ufw --force enable
+
